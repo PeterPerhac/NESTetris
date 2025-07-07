@@ -133,7 +133,7 @@ demoButtonsTable:
         .byte   $01,$06,$00,$0B,$01,$05,$00,$1D
 .endif
         ; unknown size
-demoTetriminoTypeTable:
+demoTetrominoTypeTable:
         .byte   $00,$14,$8A,$45,$22,$11,$88,$44
         .byte   $22,$91,$48,$A4,$52,$29,$14,$0A
         .byte   $85,$C2,$E1,$70,$38,$9C,$4E,$A7

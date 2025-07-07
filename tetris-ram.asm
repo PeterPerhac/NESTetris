@@ -14,8 +14,8 @@ spawnCount:	.res 1	; $001A
 verticalBlankingInterval:	.res 1	; $0033
 unused_0E: .res 1 ; $0034
 .res 11
-tetriminoX:	.res 1	; $0040
-tetriminoY:	.res 1	; $0041
+tetrominoX:	.res 1	; $0040
+tetrominoY:	.res 1	; $0041
 currentPiece:	.res 1	; $0042
 .res 1
 levelNumber:	.res 1	; $0044
@@ -36,8 +36,8 @@ curtainRow:	.res 1	; $0058
 startHeight:	.res 1	; $0059
 garbageHole:	.res 1	; $005A
 .res 5
-player1_tetriminoX:	.res 1	; $0060
-player1_tetriminoY:	.res 1	; $0061
+player1_tetrominoX:	.res 1	; $0060
+player1_tetrominoY:	.res 1	; $0061
 player1_currentPiece:	.res 1	; $0062
 .res 1
 player1_levelNumber:	.res 1	; $0064
@@ -58,8 +58,8 @@ player1_curtainRow:	.res 1	; $0078
 player1_startHeight:	.res 1	; $0079
 player1_garbageHole:	.res 1	; $007A
 .res 5
-player2_tetriminoX:	.res 1	; $0080
-player2_tetriminoY:	.res 1	; $0081
+player2_tetrominoX:	.res 1	; $0080
+player2_tetrominoY:	.res 1	; $0081
 player2_currentPiece:	.res 1	; $0082
 .res 1
 player2_levelNumber:	.res 1	; $0084

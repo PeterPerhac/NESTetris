@@ -15,8 +15,8 @@ unused_0E       := $0034                              ; Always $0E
 
 .if NWC = 1
 
-tetriminoX      := $0060
-tetriminoY      := $0061
+tetrominoX      := $0060
+tetrominoY      := $0061
 currentPiece    := $0062
 levelNumber     := $0064
 fallTimer       := $0065
@@ -38,8 +38,8 @@ garbageHole     := $007A
 
 .else
 
-tetriminoX      := $0040                        ; Player data is $20 in size. It is copied here from $60 or $80, processed, then copied back
-tetriminoY      := $0041
+tetrominoX      := $0040                        ; Player data is $20 in size. It is copied here from $60 or $80, processed, then copied back
+tetrominoY      := $0041
 currentPiece    := $0042                        ; Current piece as an orientation ID
 levelNumber     := $0044
 fallTimer       := $0045
@@ -61,8 +61,8 @@ garbageHole     := $005A                        ; Position of hole in received g
 
 .endif
 
-player1_tetriminoX:= $0060
-player1_tetriminoY:= $0061
+player1_tetrominoX:= $0060
+player1_tetrominoY:= $0061
 player1_currentPiece:= $0062
 player1_levelNumber:= $0064
 player1_fallTimer:= $0065
@@ -81,8 +81,8 @@ player1_lineIndex := $0077
 player1_curtainRow:= $0078
 player1_startHeight:= $0079
 player1_garbageHole:= $007A
-player2_tetriminoX:= $0080
-player2_tetriminoY:= $0081
+player2_tetrominoX:= $0080
+player2_tetrominoY:= $0081
 player2_currentPiece:= $0082
 player2_levelNumber:= $0084
 player2_fallTimer:= $0085
@@ -414,7 +414,7 @@ initRamContinued:
         cmp     #$05
         bne     @continue
         lda     demoButtonsAddr+1
-        cmp     #>demoTetriminoTypeTable
+        cmp     #>demoTetrominoTypeTable
         bne     @continue
         lda     #>demoButtonsTable
         sta     demoButtonsAddr+1
@@ -475,42 +475,42 @@ branchOnPlayStatePlayer1:
         lda     playState
         jsr     switch_s_plus_2a
         .addr   playState_unassignOrientationId
-        .addr   playState_playerControlsActiveTetrimino
-        .addr   playState_lockTetrimino
+        .addr   playState_playerControlsActiveTetromino
+        .addr   playState_lockTetromino
         .addr   playState_checkForCompletedRows
         .addr   playState_noop
         .addr   playState_updateLinesAndStatistics
         .addr   playState_bTypeGoalCheck
         .addr   playState_receiveGarbage
-        .addr   playState_spawnNextTetrimino
+        .addr   playState_spawnNextTetromino
         .addr   playState_noop
         .addr   playState_updateGameOverCurtain
         .addr   playState_incrementPlayState
-playState_playerControlsActiveTetrimino:
-        jsr     shift_tetrimino
-        jsr     rotate_tetrimino
-        jsr     drop_tetrimino
+playState_playerControlsActiveTetromino:
+        jsr     shift_tetromino
+        jsr     rotate_tetromino
+        jsr     drop_tetromino
         rts
 
 branchOnPlayStatePlayer2:
         lda     playState
         jsr     switch_s_plus_2a
         .addr   playState_unassignOrientationId
-        .addr   playState_player2ControlsActiveTetrimino
-        .addr   playState_lockTetrimino
+        .addr   playState_player2ControlsActiveTetromino
+        .addr   playState_lockTetromino
         .addr   playState_checkForCompletedRows
         .addr   playState_noop
         .addr   playState_updateLinesAndStatistics
         .addr   playState_bTypeGoalCheck
         .addr   playState_receiveGarbage
-        .addr   playState_spawnNextTetrimino
+        .addr   playState_spawnNextTetromino
         .addr   playState_noop
         .addr   playState_updateGameOverCurtain
         .addr   playState_incrementPlayState
-playState_player2ControlsActiveTetrimino:
-        jsr     shift_tetrimino
-        jsr     rotate_tetrimino
-        jsr     drop_tetrimino
+playState_player2ControlsActiveTetromino:
+        jsr     shift_tetromino
+        jsr     rotate_tetromino
+        jsr     drop_tetromino
         rts
 
 gameMode_legalScreen:
@@ -1200,11 +1200,11 @@ gameModeState_initGameState:
         dex
         bne     @initStatsByType
         lda     #$05
-        sta     player1_tetriminoX
-        sta     player2_tetriminoX
+        sta     player1_tetrominoX
+        sta     player2_tetrominoX
         lda     #$00
-        sta     player1_tetriminoY
-        sta     player2_tetriminoY
+        sta     player1_tetrominoY
+        sta     player2_tetrominoY
         sta     player1_vramRow
         sta     player2_vramRow
         sta     player1_fallTimer
@@ -1239,14 +1239,14 @@ gameModeState_initGameState:
         lda     #INITIAL_AUTOREPEAT_Y
         sta     player1_autorepeatY
         sta     player2_autorepeatY
-        jsr     chooseNextTetrimino
+        jsr     chooseNextTetromino
         sta     player1_currentPiece
         sta     player2_currentPiece
         jsr     incrementPieceStat
         ldx     #rng_seed
         ldy     #$02
         jsr     generateNextPseudorandomNumber
-        jsr     chooseNextTetrimino
+        jsr     chooseNextTetromino
         sta     nextPiece
         sta     twoPlayerPieceDelayPiece
         lda     gameType
@@ -1277,8 +1277,8 @@ makePlayer1Active:
         sta     heldButtons
         ldx     #$1F
 @copyByteFromMirror:
-        lda     player1_tetriminoX,x
-        sta     tetriminoX,x
+        lda     player1_tetrominoX,x
+        sta     tetrominoX,x
         dex
         cpx     #$FF
         bne     @copyByteFromMirror
@@ -1296,8 +1296,8 @@ makePlayer2Active:
         sta     heldButtons
         ldx     #$1F
 @whileXNotNeg1:
-        lda     player2_tetriminoX,x
-        sta     tetriminoX,x
+        lda     player2_tetrominoX,x
+        sta     tetrominoX,x
         dex
         cpx     #$FF
         bne     @whileXNotNeg1
@@ -1307,8 +1307,8 @@ makePlayer2Active:
 savePlayer1State:
         ldx     #$1F
 @copyByteToMirror:
-        lda     tetriminoX,x
-        sta     player1_tetriminoX,x
+        lda     tetrominoX,x
+        sta     player1_tetrominoX,x
         dex
         cpx     #$FF
         bne     @copyByteToMirror
@@ -1325,8 +1325,8 @@ savePlayer1State:
 savePlayer2State:
         ldx     #$1F
 @whileXNotNeg1:
-        lda     tetriminoX,x
-        sta     player2_tetriminoX,x
+        lda     tetrominoX,x
+        sta     player2_tetrominoX,x
         dex
         cpx     #$FF
         bne     @whileXNotNeg1
@@ -1462,7 +1462,7 @@ gameModeState_updateCountersAndNonPlayerState:
 @ret:   inc     gameModeState
         rts
 
-rotate_tetrimino:
+rotate_tetromino:
         lda     currentPiece
         sta     originalY
         clc
@@ -1527,7 +1527,7 @@ rotationTable:
         .byte   iHoriz, iHoriz ; from iVert
         .byte   iVert, iVert   ; from iHoriz
 
-drop_tetrimino:
+drop_tetromino:
         lda     autorepeatY
         bpl     @notBeginningOfGame
         lda     newlyPressedButtons
@@ -1569,13 +1569,13 @@ drop_tetrimino:
         inc     holdDownPoints
 @drop:  lda     #$00
         sta     fallTimer
-        lda     tetriminoY
+        lda     tetrominoY
         sta     originalY
-        inc     tetriminoY
+        inc     tetrominoY
         jsr     isPositionValid
         beq     @ret
         lda     originalY
-        sta     tetriminoY
+        sta     tetrominoY
         lda     #$02
         sta     playState
         jsr     updatePlayfield
@@ -1613,8 +1613,8 @@ framesPerDropTable:
 
 unreferenced_framesPerDropTable:
         .byte   $01,$01
-shift_tetrimino:
-        lda     tetriminoX
+shift_tetromino:
+        lda     tetrominoX
         sta     originalY
         lda     heldButtons
         and     #BUTTON_DOWN
@@ -1640,7 +1640,7 @@ shift_tetrimino:
         lda     heldButtons
         and     #BUTTON_RIGHT
         beq     @notPressingRight
-        inc     tetriminoX
+        inc     tetrominoX
         jsr     isPositionValid
         bne     @restoreX
         lda     #$03
@@ -1651,7 +1651,7 @@ shift_tetrimino:
         lda     heldButtons
         and     #BUTTON_LEFT
         beq     @ret
-        dec     tetriminoX
+        dec     tetrominoX
         jsr     isPositionValid
         bne     @restoreX
         lda     #$03
@@ -1660,13 +1660,13 @@ shift_tetrimino:
 
 @restoreX:
         lda     originalY
-        sta     tetriminoX
+        sta     tetrominoX
         lda     #DAS_RESET
         sta     autorepeatX
 @ret:   rts
 
 stageSpriteForCurrentPiece:
-        lda     tetriminoX
+        lda     tetrominoX
         asl     a
         asl     a
         asl     a
@@ -1687,7 +1687,7 @@ stageSpriteForCurrentPiece:
         sta     generalCounter3 ; and player 2's field is more to the right
 @calculateYPixel:
         clc
-        lda     tetriminoY
+        lda     tetrominoY
         rol     a
         rol     a
         rol     a
@@ -2390,14 +2390,14 @@ sprite55Penguin2:
         .byte   $00,$DD,$21,$00,$00,$DE,$21,$08
         .byte   $FF
 isPositionValid:
-        lda     tetriminoY
+        lda     tetrominoY
         asl     a
         sta     generalCounter
         asl     a
         asl     a
         clc
         adc     generalCounter
-        adc     tetriminoX
+        adc     tetrominoX
         sta     generalCounter
         lda     currentPiece
         asl     a
@@ -2410,11 +2410,11 @@ isPositionValid:
         ldy     #$00
         lda     #$04
         sta     generalCounter3
-; Checks one square within the tetrimino
+; Checks one square within the tetromino
 @checkSquare:
         lda     orientationTable,x
         clc
-        adc     tetriminoY
+        adc     tetrominoY
         adc     #$02
         cmp     #$16
         bcs     @invalid
@@ -2439,7 +2439,7 @@ isPositionValid:
         bcc     @invalid
         lda     orientationTable,x
         clc
-        adc     tetriminoX
+        adc     tetrominoX
         cmp     #$0A
         bcs     @invalid
         inx
@@ -2893,7 +2893,7 @@ noop_disabledVramRowIncr:
         sta     player2_vramRow
 @ret:   rts
 
-playState_spawnNextTetrimino:
+playState_spawnNextTetromino:
         lda     vramRow
         cmp     #$20
         bmi     @ret
@@ -2906,7 +2906,7 @@ playState_spawnNextTetrimino:
         inc     twoPlayerPieceDelayCounter
         lda     activePlayer
         sta     twoPlayerPieceDelayPlayer
-        jsr     chooseNextTetrimino
+        jsr     chooseNextTetromino
         sta     twoPlayerPieceDelayPiece
         jmp     @ret
 
@@ -2921,11 +2921,11 @@ playState_spawnNextTetrimino:
         lda     #$00
         sta     twoPlayerPieceDelayCounter
         sta     fallTimer
-        sta     tetriminoY
+        sta     tetrominoY
         lda     #$01
         sta     playState
         lda     #$05
-        sta     tetriminoX
+        sta     tetrominoX
         ldx     nextPiece
         lda     spawnOrientationFromOrientation,x
         sta     currentPiece
@@ -2938,20 +2938,20 @@ playState_spawnNextTetrimino:
         jmp     @resetDownHold
 
 @onePlayerPieceSelection:
-        jsr     chooseNextTetrimino
+        jsr     chooseNextTetromino
         sta     nextPiece
 @resetDownHold:
         lda     #$00
         sta     autorepeatY
 @ret:   rts
 
-chooseNextTetrimino:
+chooseNextTetromino:
         lda     gameMode
         cmp     #$05
-        bne     pickRandomTetrimino
+        bne     pickRandomTetromino
         ldx     demoIndex
         inc     demoIndex
-        lda     demoTetriminoTypeTable,x
+        lda     demoTetrominoTypeTable,x
         lsr     a
         lsr     a
         lsr     a
@@ -2961,16 +2961,7 @@ chooseNextTetrimino:
         lda     spawnTable,x
         rts
 
-pickRandomTetrimino:
-        jsr     @realStart
-        rts
-
-@realStart:
-.if NWC = 1
-        ldx     #rng_seed
-        ldy     #$02
-        jsr     generateNextPseudorandomNumber
-.endif
+pickRandomTetromino:
         inc     spawnCount
         lda     rng_seed
         clc
@@ -2985,7 +2976,6 @@ pickRandomTetrimino:
 @invalidIndex:
         ldx     #rng_seed
         ldy     #$02
-        jsr     generateNextPseudorandomNumber
         lda     rng_seed
         and     #$07
         clc
@@ -3002,7 +2992,7 @@ useNewSpawnID:
         sta     spawnID
         rts
 
-tetriminoTypeFromOrientation:
+tetrominoTypeFromOrientation:
         .byte   tPiece, tPiece, tPiece, tPiece
         .byte   jPiece, jPiece, jPiece, jPiece
         .byte   zPiece, zPiece
@@ -3029,7 +3019,7 @@ spawnOrientationFromOrientation:
 
 incrementPieceStat:
         tax
-        lda     tetriminoTypeFromOrientation,x
+        lda     tetrominoTypeFromOrientation,x
         asl     a
         tax
         lda     statsByType,x
@@ -3059,7 +3049,7 @@ L9996:  lda     generalCounter
         sta     outOfDateRenderFlags
         rts
 
-playState_lockTetrimino:
+playState_lockTetromino:
         jsr     isPositionValid
         beq     @notGameOver
         lda     #$02
@@ -3075,14 +3065,14 @@ playState_lockTetrimino:
         lda     vramRow
         cmp     #$20
         bmi     @ret
-        lda     tetriminoY
+        lda     tetrominoY
         asl     a
         sta     generalCounter
         asl     a
         asl     a
         clc
         adc     generalCounter
-        adc     tetriminoX
+        adc     tetrominoX
         sta     generalCounter
         lda     currentPiece
         asl     a
@@ -3095,7 +3085,7 @@ playState_lockTetrimino:
         ldy     #$00
         lda     #$04
         sta     generalCounter3
-; Copies a single square of the tetrimino to the playfield
+; Copies a single square of the tetromino to the playfield
 @lockSquare:
         lda     orientationTable,x
         asl     a
@@ -3192,7 +3182,7 @@ playState_checkForCompletedRows:
         jmp     @ret
 
 @updatePlayfieldComplete:
-        lda     tetriminoY
+        lda     tetrominoY
         sec
         sbc     #$02
         bpl     @yInRange
@@ -3530,7 +3520,7 @@ pointsTable:
         .word   $0000,$0040,$0100,$0300
         .word   $1200
 updatePlayfield:
-        ldx     tetriminoY
+        ldx     tetrominoY
         dex
         dex
         txa
@@ -3663,7 +3653,7 @@ pollControllerButtons:
         sta     demo_repeats
         jsr     demoButtonsTable_indexIncr
         lda     demoButtonsAddr+1
-        cmp     #>demoTetriminoTypeTable
+        cmp     #>demoTetrominoTypeTable
         beq     @ret
         jmp     @holdButtons
 
@@ -3708,7 +3698,7 @@ pollControllerButtons:
         sta     (demoButtonsAddr,x)
         jsr     demoButtonsTable_indexIncr
         lda     demoButtonsAddr+1
-        cmp     #>demoTetriminoTypeTable
+        cmp     #>demoTetrominoTypeTable
         beq     @ret2
         lda     heldButtons_player1
         sta     demo_heldButtons
@@ -5869,11 +5859,11 @@ soundEffectSlot0Playing_table:
 soundEffectSlot1Init_table:
         .addr   soundEffectSlot1_menuOptionSelectInit
         .addr   soundEffectSlot1_menuScreenSelectInit
-        .addr   soundEffectSlot1_shiftTetriminoInit
+        .addr   soundEffectSlot1_shiftTetrominoInit
         .addr   soundEffectSlot1_tetrisAchievedInit
-        .addr   soundEffectSlot1_rotateTetriminoInit
+        .addr   soundEffectSlot1_rotateTetrominoInit
         .addr   soundEffectSlot1_levelUpInit
-        .addr   soundEffectSlot1_lockTetriminoInit
+        .addr   soundEffectSlot1_lockTetrominoInit
         .addr   soundEffectSlot1_chirpChirpInit
         .addr   soundEffectSlot1_lineClearingInit
         .addr   soundEffectSlot1_lineCompletedInit
@@ -5882,7 +5872,7 @@ soundEffectSlot1Playing_table:
         .addr   soundEffectSlot1_menuScreenSelectPlaying
         .addr   soundEffectSlot1Playing_advance
         .addr   soundEffectSlot1_tetrisAchievedPlaying
-        .addr   soundEffectSlot1_rotateTetriminoPlaying
+        .addr   soundEffectSlot1_rotateTetrominoPlaying
         .addr   soundEffectSlot1_levelUpPlaying
         .addr   soundEffectSlot1Playing_advance
         .addr   soundEffectSlot1_chirpChirpPlaying
@@ -6016,13 +6006,13 @@ music_pause_sq1_even:
 ; Referenced at LE20F
 music_pause_sq1_odd:
         .byte   $9D,$7F,$40,$28
-soundEffectSlot1_rotateTetriminoInitData:
+soundEffectSlot1_rotateTetrominoInitData:
         .byte   $9E,$7F,$C0,$28
-soundEffectSlot1Playing_rotateTetriminoStage3:
+soundEffectSlot1Playing_rotateTetrominoStage3:
         .byte   $B2,$7F,$C0,$08
 soundEffectSlot1_levelUpInitData:
         .byte   $DE,$7F,$A8,$18
-soundEffectSlot1_lockTetriminoInitData:
+soundEffectSlot1_lockTetrominoInitData:
         .byte   $9F,$84,$FF,$0B
 soundEffectSlot1_menuOptionSelectInitData:
         .byte   $DB,$7F,$40,$28
@@ -6040,7 +6030,7 @@ soundEffectSlot1_chirpChirpInitData:
         .byte   $96,$7F,$36,$20
 soundEffectSlot1Playing_chirpChirpStage2:
         .byte   $82,$7F,$30,$F8
-soundEffectSlot1_shiftTetriminoInitData:
+soundEffectSlot1_shiftTetrominoInitData:
         .byte   $98,$7F,$80,$38
 soundEffectSlot3_fallingAlienInitData:
         .byte   $30,$7F,$70,$08
@@ -6347,18 +6337,18 @@ soundEffectSlot1_chirpChirpInit:
         ldy     #<soundEffectSlot1_chirpChirpInitData
         jmp     initSoundEffectShared
 
-soundEffectSlot1_lockTetriminoInit:
+soundEffectSlot1_lockTetrominoInit:
         jsr     LE33B
         beq     soundEffectSlot1Playing_ret
         lda     #$0F
-        ldy     #<soundEffectSlot1_lockTetriminoInitData
+        ldy     #<soundEffectSlot1_lockTetrominoInitData
         jmp     initSoundEffectShared
 
-soundEffectSlot1_shiftTetriminoInit:
+soundEffectSlot1_shiftTetrominoInit:
         jsr     LE33B
         beq     soundEffectSlot1Playing_ret
         lda     #$02
-        ldy     #<soundEffectSlot1_shiftTetriminoInitData
+        ldy     #<soundEffectSlot1_shiftTetrominoInitData
         jmp     initSoundEffectShared
 
 soundEffectSlot1Playing_advance:
@@ -6393,18 +6383,18 @@ soundEffectSlot1_menuOptionSelectInit:
         lda     #$03
         ldy     #<soundEffectSlot1_menuOptionSelectInitData
         bne     LE417
-soundEffectSlot1_rotateTetrimino_ret:
+soundEffectSlot1_rotateTetromino_ret:
         rts
 
-soundEffectSlot1_rotateTetriminoInit:
+soundEffectSlot1_rotateTetrominoInit:
         jsr     LE33B
-        beq     soundEffectSlot1_rotateTetrimino_ret
+        beq     soundEffectSlot1_rotateTetromino_ret
         lda     #$04
-        ldy     #<soundEffectSlot1_rotateTetriminoInitData
+        ldy     #<soundEffectSlot1_rotateTetrominoInitData
         jsr     LE417
-soundEffectSlot1_rotateTetriminoPlaying:
+soundEffectSlot1_rotateTetrominoPlaying:
         jsr     advanceAudioSlotFrame
-        bne     soundEffectSlot1_rotateTetrimino_ret
+        bne     soundEffectSlot1_rotateTetromino_ret
         lda     soundEffectSlot1SecondaryCounter
         inc     soundEffectSlot1SecondaryCounter
         beq     @stage3
@@ -6413,14 +6403,14 @@ soundEffectSlot1_rotateTetriminoPlaying:
         cmp     #$02
         beq     @stage3
         cmp     #$03
-        bne     soundEffectSlot1_rotateTetrimino_ret
+        bne     soundEffectSlot1_rotateTetromino_ret
         jmp     soundEffectSlot1Playing_stop
 
-@stage2:ldy     #<soundEffectSlot1_rotateTetriminoInitData
+@stage2:ldy     #<soundEffectSlot1_rotateTetrominoInitData
         jmp     copyToSq1Channel
 
 ; On first glance it appears this is used twice, but the first beq does nothing because the inc result will never be 0
-@stage3:ldy     #<soundEffectSlot1Playing_rotateTetriminoStage3
+@stage3:ldy     #<soundEffectSlot1Playing_rotateTetrominoStage3
         jmp     copyToSq1Channel
 
 soundEffectSlot1_tetrisAchievedInit:
