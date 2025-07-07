@@ -2979,7 +2979,7 @@ pickRandomTetrimino:
         cmp     #$07
         beq     @invalidIndex
         tax
-        lda     spawnTable,x
+        lda     #$12
         cmp     spawnID
         bne     useNewSpawnID
 @invalidIndex:
