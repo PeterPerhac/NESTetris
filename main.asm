@@ -1830,6 +1830,7 @@ L8B9D:  lda     orientationTable,y
         rts
 
 stageSpriteForNextPiece:
+        rts
         lda     displayNextPiece
         bne     @ret
         lda     #$C8
